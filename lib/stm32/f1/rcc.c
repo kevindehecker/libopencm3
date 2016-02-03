@@ -840,7 +840,7 @@ void rcc_clock_setup_in_hse_8mhz_out_24mhz(void)
 
 
 /*---------------------------------------------------------------------------*/
-/** @brief RCC Set System Clock PLL at 24MHz from HSE at 8MHz
+/** @brief RCC Set System Clock PLL at 24MHz from HSE at 24MHz
 
 */
 
@@ -853,7 +853,7 @@ void rcc_clock_setup_in_hse_24mhz_out_24mhz(void)
 	/* Select HSI as SYSCLK source. */
 	rcc_set_sysclk_source(RCC_CFGR_SW_SYSCLKSEL_HSICLK);
 
-	/* Enable external high-speed oscillator 8MHz. */
+        /* Enable external high-speed oscillator 24MHz. */
 	rcc_osc_on(HSE);
 	rcc_wait_for_osc_ready(HSE);
 	rcc_set_sysclk_source(RCC_CFGR_SW_SYSCLKSEL_HSECLK);
@@ -876,8 +876,8 @@ void rcc_clock_setup_in_hse_24mhz_out_24mhz(void)
 	flash_set_ws(FLASH_ACR_LATENCY_0WS);
 
 	/*
-	 * Set the PLL multiplication factor to 3.
-	 * 8MHz (external) * 3 (multiplier) = 24MHz
+         * Set the PLL multiplication factor to 2.
+         * 24MHz (external) * 2 (multiplier) / 2 (RCC_CFGR_PLLXTPRE_HSE_CLK_DIV2) = 24MHz
 	 */
 	rcc_set_pll_multiplication_factor(RCC_CFGR_PLLMUL_PLL_CLK_MUL2);
 
@@ -885,7 +885,7 @@ void rcc_clock_setup_in_hse_24mhz_out_24mhz(void)
 	rcc_set_pll_source(RCC_CFGR_PLLSRC_HSE_CLK);
 
 	/*
-	 * External frequency undivided before entering PLL
+         * External frequency divide by 2 before entering PLL
 	 * (only valid/needed for HSE).
 	 */
 	rcc_set_pllxtpre(RCC_CFGR_PLLXTPRE_HSE_CLK_DIV2);
@@ -1035,7 +1035,7 @@ void rcc_clock_setup_in_hse_12mhz_out_72mhz(void)
 
 
 /*---------------------------------------------------------------------------*/
-/** @brief RCC Set System Clock PLL at 24MHz from HSE at 24MHz
+/** @brief RCC Set System Clock PLL at 72MHz from HSE at 24MHz
 
 */
 
@@ -1048,7 +1048,7 @@ void rcc_clock_setup_in_hse_24mhz_out_72mhz(void)
 	/* Select HSI as SYSCLK source. */
 	rcc_set_sysclk_source(RCC_CFGR_SW_SYSCLKSEL_HSICLK);
 
-	/* Enable external high-speed oscillator 16MHz. */
+        /* Enable external high-speed oscillator 24MHz. */
 	rcc_osc_on(HSE);
 	rcc_wait_for_osc_ready(HSE);
 	rcc_set_sysclk_source(RCC_CFGR_SW_SYSCLKSEL_HSECLK);
@@ -1072,18 +1072,18 @@ void rcc_clock_setup_in_hse_24mhz_out_72mhz(void)
 
 	/*
 	 * Set the PLL multiplication factor to 9.
-	 * 24MHz (external) * 6 (multiplier) / 2 (PLLXTPRE_HSE_CLK) = 72MHz
+         * 24MHz (external) * 3 (multiplier) / 1 (RCC_CFGR_PLLXTPRE_HSE_CLK) = 72MHz
 	 */
-	rcc_set_pll_multiplication_factor(RCC_CFGR_PLLMUL_PLL_CLK_MUL6);
+        rcc_set_pll_multiplication_factor(RCC_CFGR_PLLMUL_PLL_CLK_MUL3);
 
 	/* Select HSI as PLL source. */
 	rcc_set_pll_source(RCC_CFGR_PLLSRC_HSE_CLK);
 
 	/*
-	 * Divide external frequency by 2 before entering PLL
+         * Divide external frequency by 1 before entering PLL
 	 * (only valid/needed for HSE).
 	 */
-	rcc_set_pllxtpre(RCC_CFGR_PLLXTPRE_HSE_CLK_DIV2);
+        rcc_set_pllxtpre(RCC_CFGR_PLLXTPRE_HSE_CLK);
 
 	/* Enable PLL oscillator and wait for it to stabilize. */
 	rcc_osc_on(PLL);
@@ -1095,8 +1095,7 @@ void rcc_clock_setup_in_hse_24mhz_out_72mhz(void)
 	/* Set the peripheral clock frequencies used */
 	rcc_ahb_frequency = 72000000;
 	rcc_apb1_frequency = 36000000;
-	rcc_apb2_frequency = 72000000;
-	#pragma once hoerrr
+	rcc_apb2_frequency = 72000000;	
 }
 
 /*---------------------------------------------------------------------------*/
