@@ -840,7 +840,7 @@ void rcc_clock_setup_in_hse_8mhz_out_24mhz(void)
 
 
 /*---------------------------------------------------------------------------*/
-/** @brief RCC Set System Clock PLL at 24MHz from HSE at 24MHz
+/** @brief RCC Set System Clock HSE at 24MHz from HSE at 24MHz
 
 */
 
@@ -885,17 +885,12 @@ void rcc_clock_setup_in_hse_24mhz_out_24mhz(void)
 	rcc_set_pll_source(RCC_CFGR_PLLSRC_HSE_CLK);
 
 	/*
-         * External frequency divide by 2 before entering PLL
+   * External frequency divide by 2 before entering PLL
 	 * (only valid/needed for HSE).
 	 */
 	rcc_set_pllxtpre(RCC_CFGR_PLLXTPRE_HSE_CLK_DIV2);
 
-	/* Enable PLL oscillator and wait for it to stabilize. */
-	rcc_osc_on(PLL);
-	rcc_wait_for_osc_ready(PLL);
-
-	/* Select PLL as SYSCLK source. */
-	rcc_set_sysclk_source(RCC_CFGR_SW_SYSCLKSEL_PLLCLK);
+	//Remain using the HSE as primary source for everything, using the PLL actually breaks things!!!
 
 	/* Set the peripheral clock frequencies used */
 	rcc_ahb_frequency = 24000000;
@@ -1071,19 +1066,19 @@ void rcc_clock_setup_in_hse_24mhz_out_72mhz(void)
 	flash_set_ws(FLASH_ACR_LATENCY_2WS);
 
 	/*
-	 * Set the PLL multiplication factor to 9.
-         * 24MHz (external) * 3 (multiplier) / 1 (RCC_CFGR_PLLXTPRE_HSE_CLK) = 72MHz
+	 * Set the PLL multiplication factor to 3.
+   * 24MHz (external) * 3 (multiplier) / 1 (RCC_CFGR_PLLXTPRE_HSE_CLK) = 72MHz
 	 */
-        rcc_set_pll_multiplication_factor(RCC_CFGR_PLLMUL_PLL_CLK_MUL3);
+  rcc_set_pll_multiplication_factor(RCC_CFGR_PLLMUL_PLL_CLK_MUL3);
 
-	/* Select HSI as PLL source. */
+	/* Select HSE as PLL source. */
 	rcc_set_pll_source(RCC_CFGR_PLLSRC_HSE_CLK);
 
 	/*
-         * Divide external frequency by 1 before entering PLL
+   * Divide external frequency by 1 before entering PLL
 	 * (only valid/needed for HSE).
 	 */
-        rcc_set_pllxtpre(RCC_CFGR_PLLXTPRE_HSE_CLK);
+  rcc_set_pllxtpre(RCC_CFGR_PLLXTPRE_HSE_CLK);
 
 	/* Enable PLL oscillator and wait for it to stabilize. */
 	rcc_osc_on(PLL);
@@ -1095,7 +1090,7 @@ void rcc_clock_setup_in_hse_24mhz_out_72mhz(void)
 	/* Set the peripheral clock frequencies used */
 	rcc_ahb_frequency = 72000000;
 	rcc_apb1_frequency = 36000000;
-	rcc_apb2_frequency = 72000000;	
+	rcc_apb2_frequency = 72000000;
 }
 
 /*---------------------------------------------------------------------------*/
